@@ -5,7 +5,12 @@ const bcrypt = require('bcrypt');
 
 // create our User model from the model class using the extends keyword
 //this makes is to user inherits all of the model class functionality
-class User extends Model {}
+class User extends Model {
+    //set up method to run on instance data (per user) to check password
+    checkPassword(loginPw) {
+        return bcrypt.compareSync(loginPw, this.password);
+    }
+}
 
 // Initialize the model's data table columns and configuration
 //passing 2 objects as arguments.
@@ -55,7 +60,13 @@ User.init(
           beforeCreate: async (newUserData) => {
             newUserData.password = await bcrypt.hash(newUserData.password, 10);
             return newUserData;
-          }
+          },
+    
+            //set up before Update lifecycle "hook" functionality
+            async beforeUpdate(updatedUserData) {
+                updatedUserData.password = await bcrypt.hash(updatedUserData.password, 10);
+                return updatedUserData;
+            }
         },
         sequelize,
         timestamps: false,
