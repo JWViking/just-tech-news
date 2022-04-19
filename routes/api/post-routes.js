@@ -31,6 +31,10 @@ router.get('/', (req, res) => {
         {
           model: User,
           attributes: ['username']
+        },
+        {
+            model: Vote,
+            attributes: ['user_id']
         }
       ]
     })
